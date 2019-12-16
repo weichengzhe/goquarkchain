@@ -2,13 +2,31 @@ version: 2
 jobs:
   build:
     docker:
-      - image: ninjaahhh/circleci-goquarkchain:v0.0.2
+      - image: quarkchaindocker/goquarkchain
     steps:
       - checkout
       - restore_cache:
           keys:
             - go-mod-v2-{{ checksum "go.sum" }}
       # Build qkchash c++
+      - run: cd consensus/qkchash/native && make && cd -
+      - run: go vet ./...
+      - run: go test -timeout 1m ./... -gcflags=-l
+      - save_cache:
+          key: go-mod-v2-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+  test:
+    docker:
+      - image: quarkchaindocker/goquarkchain
+    parallelism: 4
+    working_directory: /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v2-{{checksum "go.sum"}}
       - run: cd consensus/qkchash/native && make && cd -
       - run: go vet ./...
       - run: go test -timeout 1m ./... -gcflags=-l
