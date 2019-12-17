@@ -96,7 +96,7 @@ jobs:
           command: |
             echo "hello check_db"
             pwd && ls
-            cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
+            cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
 
 
 
