@@ -75,6 +75,11 @@ workflows:
       - test:
           requires:
             - build
+      - download-snapshot
+      - check-db:
+          requires:
+            - build
+            - download-snapshot
   nightly:
     triggers:
       - schedule:
@@ -82,7 +87,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - dev
     jobs:
       - build
       - download-snapshot
