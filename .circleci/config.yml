@@ -44,7 +44,7 @@ jobs:
          command: |
           echo "hello download-snapshot"
 
-  check_db:
+  check-db:
     docker:
       - image: quarkchaindocker/goquarkchain
     parallelism: 4
