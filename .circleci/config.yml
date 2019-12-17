@@ -4,7 +4,11 @@ jobs:
     docker:
       - image: quarkchaindocker/goquarkchain
 
+    working_directory: /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster
+
+
     steps:
+      - run: pwd
       - checkout
 
       - restore_cache:
@@ -45,13 +49,16 @@ jobs:
     steps:
       - run: mkdir -p workspace
       - run: pwd
+      - run: ls
       - run:
          name: download-snapshot
          command: |
            echo "hello download-snapshot"
            curl https://qkcmainnet-go.s3.amazonaws.com/data/`curl https://qkcmainnet-go.s3.amazonaws.com/data/LATEST`.tar.gz --output data.tar.gz
            tar xvfz data.tar.gz
-           rm data.tar.gz && mv data workspace/
+           rm data.tar.gz && mv mainnet workspace/
+           ls
+           ls workspace
       - save_cache:
           paths:
             - /tmp/workspace/data
@@ -61,7 +68,7 @@ jobs:
     docker:
       - image: quarkchaindocker/goquarkchain
 
-    working_directory: /tmp
+    working_directory: /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster
 
     steps:
 
@@ -73,25 +80,34 @@ jobs:
           keys:
           - snapshot-
 
+      - run:
+          name: Move data
+          command: |
+            mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data
+            cd /tmp/workspace  && cd -
+            pwd && ls
+            mv /tmp/workspace/mainnet /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data/
+
 
       - run:
           name: Check DB
           command: |
             echo "hello check_db"
+            pwd && ls
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
-      - download-snapshot
-      - check-db:
-          requires:
-            - build
-            - download-snapshot
+#      - test:
+#          requires:
+#            - build
+#      - download-snapshot
+#      - check-db:
+#          requires:
+#            - build
+#            - download-snapshot
   nightly:
     triggers:
       - schedule:
