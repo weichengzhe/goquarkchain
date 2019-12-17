@@ -73,7 +73,8 @@ jobs:
     working_directory: /go/src/github.com/QuarkChain/goquarkchain
 
     steps:
-
+      - checkout:
+      - run: git branch
       - restore_cache:
           keys:
             - go-mod-v2-{{ checksum "go.sum" }}
@@ -96,6 +97,10 @@ jobs:
           command: |
             echo "hello check_db"
             pwd && ls
+            git branch
+            echo "19111111"
+            git branch -a
+            cat ./run_cluster.sh
             cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
 
 
