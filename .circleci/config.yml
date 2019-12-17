@@ -47,6 +47,7 @@ jobs:
   check-db:
     docker:
       - image: quarkchaindocker/goquarkchain
+
     working_directory: /tmp
 
     steps:
