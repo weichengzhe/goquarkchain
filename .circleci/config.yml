@@ -11,7 +11,6 @@ jobs:
       # Build qkchash c++
       - run: cd consensus/qkchash/native && make && cd -
       - run: go vet ./...
-      - run: go test -timeout 1m ./... -gcflags=-l
       - save_cache:
           key: go-mod-v2-{{ checksum "go.sum" }}
           paths:
@@ -34,3 +33,61 @@ jobs:
           key: go-mod-v2-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+  download-snapshot:
+    docker:
+      - image: quarkchaindocker/goquarkchain
+
+    working_directory: /tmp
+
+    steps:
+      - run:
+         name:download-snapshot
+         command:|
+          echo "hello download-snapshot"
+
+  check_db:
+    docker:
+      - image: quarkchaindocker/goquarkchain
+      parallelism: 4
+      working_directory: /tmp
+
+      steps:
+        - checkout
+
+        - restore_cache:
+            keys:
+              - pyquarkchain-dep-{{ checksum "requirements.txt" }}
+
+        - restore_cache:
+            keys:
+              - snapshot-
+
+
+        - run:
+            name: Check DB
+            command: |
+              echo "hello check_db"
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 3 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
+      - download-snapshot
+      - check-db:
+          requires:
+            - build
+            - download-snapshot
