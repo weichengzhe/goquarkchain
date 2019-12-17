@@ -48,25 +48,25 @@ jobs:
   check_db:
     docker:
       - image: quarkchaindocker/goquarkchain
-      parallelism: 4
-      working_directory: /tmp
+    parallelism: 4
+    working_directory: /tmp
 
-      steps:
-        - checkout
+    steps:
+      - checkout
 
-        - restore_cache:
-            keys:
-              - pyquarkchain-dep-{{ checksum "requirements.txt" }}
+      - restore_cache:
+          keys:
+          - pyquarkchain-dep-{{ checksum "requirements.txt" }}
 
-        - restore_cache:
-            keys:
-              - snapshot-
+      - restore_cache:
+          keys:
+          - snapshot-
 
 
-        - run:
-            name: Check DB
-            command: |
-              echo "hello check_db"
+      - run:
+          name: Check DB
+          command: |
+            echo "hello check_db"
 
 workflows:
   version: 2
