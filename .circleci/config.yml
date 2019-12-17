@@ -40,8 +40,8 @@ jobs:
 
     steps:
       - run:
-         name:download-snapshot
-         command:|
+         name: download-snapshot
+         command: |
           echo "hello download-snapshot"
 
   check_db:
