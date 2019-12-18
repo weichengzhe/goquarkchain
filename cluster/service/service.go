@@ -2,14 +2,16 @@
 package service
 
 import (
-	"github.com/QuarkChain/goquarkchain/p2p"
-	"github.com/QuarkChain/goquarkchain/qkcdb"
-	"github.com/QuarkChain/goquarkchain/rpc"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
+	"fmt"
 	"os"
 	"reflect"
 	"time"
+
+	"github.com/QuarkChain/goquarkchain/p2p"
+	"github.com/QuarkChain/goquarkchain/rpc"
+	"github.com/ethereum/go-ethereum/common/fdlimit"
+	"github.com/ethereum/go-ethereum/ethdb"
+	"github.com/ethereum/go-ethereum/event"
 )
 
 // ServiceContext is a collection of service independent options inherited from
@@ -27,6 +29,19 @@ func (ctx *ServiceContext) WSIsAlive() bool {
 	return ctx.config.WSEndpoint != ""
 }
 
+// makeDatabaseHandles raises out the number of allowed file handles per process
+// for Geth and returns half of the allowance to assign to the database.
+func makeDatabaseHandles() int {
+	limit, err := fdlimit.Maximum()
+	if err != nil {
+		panic(fmt.Errorf("Failed to retrieve file descriptor allowance: %v", err))
+	}
+	if err := fdlimit.Raise(uint64(limit)); err != nil {
+		panic(fmt.Errorf("Failed to raise file descriptor allowance: %v", err))
+	}
+	return limit / 2 // Leave half for networking and other stuff
+}
+
 // OpenDatabase opens an existing database with the given name (or creates one
 // if no previous can be found) from within the node's data directory. If the
 // node is an ephemeral one, a memory database is returned.
@@ -34,11 +49,12 @@ func (ctx *ServiceContext) OpenDatabase(name string, clean bool, isReadOnly bool
 	if ctx.config == nil || ctx.config.DataDir == "" {
 		return NewQkcMemoryDB(isReadOnly), nil
 	}
-	db, err := qkcdb.NewRDBDatabase(ctx.config.ResolvePath(name), clean, isReadOnly)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	//db, err := qkcdb.NewRDBDatabase(ctx.config.ResolvePath(name), clean, isReadOnly)
+	//if err != nil {
+	//	return nil, err
+	//}
+	db, err := ethdb.NewLDBDatabase(name, 128, 256)
+	return db, err
 }
 
 // ResolvePath resolves a user path into the data directory if that was relative
