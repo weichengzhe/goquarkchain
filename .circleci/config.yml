@@ -50,21 +50,21 @@ jobs:
     steps:
       - run: mkdir -p workspace
       - run: pwd
-      - run: ls
-      - run:
-         name: download-snapshot
-         command: |
-           echo "hello download-snapshot"
-           curl https://qkcmainnet-go.s3.amazonaws.com/data/`curl https://qkcmainnet-go.s3.amazonaws.com/data/LATEST`.tar.gz --output data.tar.gz
-           tar xvfz data.tar.gz
-           rm data.tar.gz && mv mainnet workspace/
-           ls
-           pwd
-           ls workspace
-      - save_cache:
-          paths:
-            - /tmp/workspace/mainnet
-          key: snapshot-{{ epoch }}
+#      - run: ls
+#      - run:
+#         name: download-snapshot
+#         command: |
+#           echo "hello download-snapshot"
+#           curl https://qkcmainnet-go.s3.amazonaws.com/data/`curl https://qkcmainnet-go.s3.amazonaws.com/data/LATEST`.tar.gz --output data.tar.gz
+#           tar xvfz data.tar.gz
+#           rm data.tar.gz && mv mainnet workspace/
+#           ls
+#           pwd
+#           ls workspace
+#      - save_cache:
+#          paths:
+#            - /tmp/workspace/mainnet
+#          key: snapshot-{{ epoch }}
 
   check-db:
     docker:
@@ -100,7 +100,7 @@ jobs:
             git branch
             echo "19111111"
             git branch
-            cat ./run_cluster.sh
+            cat /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/run_cluster.sh
             cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
 
 
