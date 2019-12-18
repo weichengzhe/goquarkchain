@@ -53,7 +53,7 @@ func (ctx *ServiceContext) OpenDatabase(name string, clean bool, isReadOnly bool
 	//if err != nil {
 	//	return nil, err
 	//}
-	db, err := ethdb.NewLDBDatabase(name, 128, 256)
+	db, err := ethdb.NewLDBDatabase(name, 32, 64)
 	return db, err
 }
 
