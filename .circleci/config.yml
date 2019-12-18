@@ -99,7 +99,7 @@ jobs:
             pwd && ls
             git branch
             echo "19111111"
-            git branch -a
+            git branch
             cat ./run_cluster.sh
             cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
 
