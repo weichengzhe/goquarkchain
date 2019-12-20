@@ -107,6 +107,7 @@ func (t *TxGenerator) Generate(genTxs rpc.GenTxRequest, addTxList func(txs []*ty
 	if numTx == 0 {
 		return fmt.Errorf("create txs operation, numTx is zero")
 	}
+	ts:=time.Now()
 	log.Info("Start Generating transactions", "tx count", numTx, "cross-shard tx count", xShardPercent)
 	for t.accountIndex < t.lenAccounts {
 		if total >= numTx {
@@ -122,11 +123,16 @@ func (t *TxGenerator) Generate(genTxs rpc.GenTxRequest, addTxList func(txs []*ty
 		index++
 
 		if index >= batchScale {
+			fmt.Println("FFFFFFFFFF-gen",time.Now().Sub(ts).Seconds(),len(txList))
+			ts=time.Now()
 			if err := addTxList(txList); err != nil {
 				return err
 			}
+
+			fmt.Println("FFFFFFFFF--addEnd",time.Now().Sub(ts).Seconds())
 			index = 0
 			txList = make([]*types.Transaction, batchScale)
+			ts=time.Now()
 		}
 
 		t.accountIndex++
