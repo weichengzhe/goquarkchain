@@ -57,13 +57,10 @@ jobs:
       - run:
           name: check remote stats
           command: |
-            apt-get update
-            apt-get install sshpass
-            ls
+            apt-get update && apt-get install sshpass
             ssh-keygen -R 138.68.224.79
-            sshpass -p 'goquarkchain' scp -o StrictHostKeyChecking=no root@138.68.224.79:/root/master.log ./
-            pwd
-            ls
+            echo $CheckDBHostPassword
+            sshpass -p $CheckDBHostPassword scp -o StrictHostKeyChecking=no root@138.68.224.79:/root/master.log ./
             cat master.log
 
 
