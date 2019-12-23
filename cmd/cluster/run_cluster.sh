@@ -17,7 +17,6 @@ sleep 2s
 cmd="./cluster --cluster_config "${configPath}" "
 
 if [  -n "$2" ] ;then
-    echo "dsdadsadasd"
     cmd="./cluster --cluster_config "${configPath}" "$2"  "
 fi
 

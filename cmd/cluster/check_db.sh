@@ -8,13 +8,14 @@ for (( i = 0; i < 60; i=(i+1) )); do
  rm -rf /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data
  mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data
  tar xvfz data.tar.gz  && mv mainnet /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data
- rm -rf *.log
+ rm -rf S*.log master.log
  git pull
  go build
  chmod +x ./run_cluster.sh
  echo "start"
  ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
  echo "end"
+ echo $DATE
  DATE=`date +%Y-%m-%d.%H:%M:%S`
  echo $DATE >> /tmp/status.txt
  sleep $step
