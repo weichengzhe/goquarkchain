@@ -47,7 +47,9 @@ func main()  {
 	session.RunCmd("docker run -itd --name checkdb --network=host quarkchaindocker/goquarkchain")
 
 	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'rm finish.txt && rm data.tar.gz  '")
+	fmt.Println("50---")
 	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'curl https://qkcmainnet-go.s3.amazonaws.com/data/2019-12-22.21:04:06.tar.gz --output data.tar.gz && tar xvfz data.tar.gz &&  rm -rf /tmp/mainnet && mv mainnet /tmp && echo ok > finish.txt'")
+	fmt.Println("52---")
 	for true{
 		status:=session.RunCmdAndGetOutPut("docker exec -it checkdb  /bin/bash -c  'cat finish.txt '")
 		fmt.Println("status",status)
