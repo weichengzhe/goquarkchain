@@ -84,8 +84,9 @@ workflows:
           filters:
             branches:
               only:
-                - fix-ci
+                - master
     jobs:
+      - build
       - check-db:
           requires:
             - build
