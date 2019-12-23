@@ -63,7 +63,9 @@ func (s *SSHSession) RunCmd(cmd string) {
 	}()
 	session.Stdout = &stdOut
 	session.Stderr = &stdErr
+	fmt.Println("66---")
 	err = session.Run(cmd)
+	fmt.Println("68---cmd",cmd,err)
 	if err != nil {
 		log.Error("run cmd err", "host", s.host, "cmd", cmd, "err", err)
 		return
