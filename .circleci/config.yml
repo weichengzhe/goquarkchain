@@ -58,9 +58,9 @@ jobs:
           name: check remote stats
           command: |
             apt-get update && apt-get install sshpass
-            ssh-keygen -R 138.68.224.79
+            ssh-keygen -R 167.71.117.195
             echo $CheckDBHostPassword
-            sshpass -p $CheckDBHostPassword scp -o StrictHostKeyChecking=no root@138.68.224.79:/root/master.log ./
+            sshpass -p $CheckDBHostPassword scp -o StrictHostKeyChecking=no root@167.71.117.195:/tmp/status.txt ./
             cat master.log
 
 
@@ -80,15 +80,12 @@ workflows:
   nightly:
     triggers:
       - schedule:
-          cron: "0 3 * * *"
+          cron: "*/5 * * * *"
           filters:
             branches:
               only:
-                - dev
+                - fix-ci
     jobs:
-      - build
-      - download-snapshot
       - check-db:
           requires:
             - build
-            - download-snapshot
