@@ -57,8 +57,7 @@ jobs:
       - run:
           name: check remote stats
           command: |
-            wget https://mirrors.ustc.edu.cn/epel/6/x86_64/sshpass-1.06-1.el6.x86_64.rpm
-            rpm -ivh sshpass-1.06-1.el6.x86_64.rpm
+            sudo apt-get install sshpass
             sshpass -p 'goquarkchain' scp root@138.68.224.79:/root/master.log ./
             cat ./master.log
 
