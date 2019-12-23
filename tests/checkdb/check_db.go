@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"github.com/QuarkChain/goquarkchain/tests/loadtest/deployer/deploy"
+	"time"
 )
 var(
 	configPath = "./checkDBConfig.json"
@@ -45,11 +46,21 @@ func main()  {
 	session.RunCmdIgnoreErr("docker  rm $(docker ps -a|grep checkdb |awk '{print $1}')")
 	session.RunCmd("docker run -itd --name checkdb --network=host quarkchaindocker/goquarkchain")
 
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'rm finish.txt && rm data.tar.gz  '")
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'curl https://qkcmainnet-go.s3.amazonaws.com/data/2019-12-22.21:04:06.tar.gz --output data.tar.gz && tar xvfz data.tar.gz &&  rm -rf /tmp/mainnet && mv mainnet /tmp && echo ok > finish.txt' &")
+	for true{
+		time.Sleep(5*time.Second)
+		status:=session.RunCmdAndGetOutPut("docker exec -it checkdb  /bin/bash -c  'mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data   '")
+		fmt.Println("status",status)
+		if status=="ok"{
+			fmt.Println("OOOOOOOOOOOOOO")
+		}else{
+			fmt.Println("RRRRRRRRRRRR")
+		}
+	}
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data   '")
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'mv /tmp/mainnet /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data/   '")
 
-	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'curl https://s3.cn-north-1.amazonaws.com.cn/qkcmainnet-go-cn/data/2019-12-22.21:04:06.tar.gz --output data.tar.gz && tar xvfz data.tar.gz && rm data.tar.gz && mv mainnet tmp/' ")
-	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data   '")
-	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'mv /tmp/mainnet /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data/   '")
-
-	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && rm -rf *.log'")
-	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  ' cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db   '")
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && rm -rf *.log'")
+	session.RunCmd("docker exec -it checkdb  /bin/bash -c  ' cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db   '")
 }
