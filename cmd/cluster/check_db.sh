@@ -11,7 +11,10 @@ for (( i = 0; i < 60; i=(i+1) )); do
  rm -rf *.log
  git pull
  go build
- chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
+ chmod +x ./run_cluster.sh
+ echo "start"
+ ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
+ echo "end"
  DATE=`date +%Y-%m-%d.%H:%M:%S`
  echo $DATE >> /tmp/status.txt
  sleep $step
