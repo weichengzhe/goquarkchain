@@ -50,7 +50,7 @@ func main()  {
 	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'curl https://qkcmainnet-go.s3.amazonaws.com/data/2019-12-22.21:04:06.tar.gz --output data.tar.gz && tar xvfz data.tar.gz &&  rm -rf /tmp/mainnet && mv mainnet /tmp && echo ok > finish.txt' &")
 	for true{
 		time.Sleep(5*time.Second)
-		status:=session.RunCmdAndGetOutPut("docker exec -it checkdb  /bin/bash -c  'mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data   '")
+		status:=session.RunCmdAndGetOutPut("docker exec -it checkdb  /bin/bash -c  'cat finish.txt '")
 		fmt.Println("status",status)
 		if status=="ok"{
 			fmt.Println("OOOOOOOOOOOOOO")
