@@ -48,7 +48,8 @@ func main()  {
 
 	session.RunCmd("docker exec -it checkdb  /bin/bash -c  'rm finish.txt && rm data.tar.gz  '")
 	fmt.Println("50---")
-	session.RunCmd("curl https://qkcmainnet-go.s3.amazonaws.com/data/2019-12-22.21:04:06.tar.gz --output data.tar.gz ")
+	session.SendFile("./d.sh","/tmp")
+	session.RunCmd("docker cp /tmp/d.sh checkdb:/tmp && chmod +x /tmp/d.sh && ./d.sh &")
 	fmt.Println("51---")
 	session.RunCmd("docker exec -it checkdb  /bin/bash -c  ' tar xvfz data.tar.gz &&  rm -rf /tmp/mainnet && mv mainnet /tmp && echo ok > finish.txt'")
 	fmt.Println("52---")
