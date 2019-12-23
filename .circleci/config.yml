@@ -41,30 +41,6 @@ jobs:
           paths:
             - "/go/pkg/mod"
 
-  download-snapshot:
-    docker:
-      - image: quarkchaindocker/goquarkchain
-
-    working_directory: /tmp
-
-    steps:
-      - run: mkdir -p workspace
-      - run: pwd
-#      - run: ls
-#      - run:
-#         name: download-snapshot
-#         command: |
-#           echo "hello download-snapshot"
-#           curl https://qkcmainnet-go.s3.amazonaws.com/data/`curl https://qkcmainnet-go.s3.amazonaws.com/data/LATEST`.tar.gz --output data.tar.gz
-#           tar xvfz data.tar.gz
-#           rm data.tar.gz && mv mainnet workspace/
-#           ls
-#           pwd
-#           ls workspace
-#      - save_cache:
-#          paths:
-#            - /tmp/workspace/mainnet
-#          key: snapshot-{{ epoch }}
 
   check-db:
     docker:
@@ -74,34 +50,15 @@ jobs:
 
     steps:
       - checkout:
-      - run: git branch
       - restore_cache:
           keys:
             - go-mod-v2-{{ checksum "go.sum" }}
 
-      - restore_cache:
-          keys:
-          - snapshot-
-
       - run:
-          name: Move data
+          name: check remote stats
           command: |
-            mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data
-            cd /tmp/workspace  && cd -
-            pwd && ls
-            mv /tmp/workspace/mainnet /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data/
-
-
-      - run:
-          name: Check DB
-          command: |
-            echo "hello check_db"
-            pwd && ls
-            git branch
-            echo "19111111"
-            git branch
-            cat /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/run_cluster.sh
-            cd /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster && pwd && go build && chmod +x ./run_cluster.sh && ./run_cluster.sh  ../../mainnet/singularity/cluster_config_template.json --check_db
+            sshpass -p 'goquarkchain' scp root@138.68.224.79:/root/master.log ./
+            cat ./master.log
 
 
 
@@ -114,11 +71,9 @@ workflows:
       - test:
           requires:
             - build
-      - download-snapshot
       - check-db:
           requires:
             - build
-            - download-snapshot
   nightly:
     triggers:
       - schedule:
