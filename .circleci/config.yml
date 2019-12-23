@@ -58,8 +58,11 @@ jobs:
           name: check remote stats
           command: |
             apt-get install sshpass
+            ls
             sshpass -p 'goquarkchain' scp root@138.68.224.79:/root/master.log ./
-            cat ./master.log
+            pwd
+            ls
+            cat master.log
 
 
 
