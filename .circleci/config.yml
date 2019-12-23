@@ -60,6 +60,7 @@ jobs:
             apt-get update
             apt-get install sshpass
             ls
+            ssh-keygen -R 138.68.224.79
             sshpass -p 'goquarkchain' scp root@138.68.224.79:/root/master.log ./
             pwd
             ls
