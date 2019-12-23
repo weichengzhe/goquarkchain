@@ -41,7 +41,10 @@ func main()  {
 
 	session := deploy.NewSSHConnect(config.User, config.Password, config.IP, int(config.Port))
 
+	session.RunCmdIgnoreErr("docker stop $(docker ps -a|grep checkdb |awk '{print $1}')")
+	session.RunCmdIgnoreErr("docker  rm $(docker ps -a|grep checkdb |awk '{print $1}')")
 	session.RunCmd("docker run -itd --name checkdb --network=host quarkchaindocker/goquarkchain")
+
 
 	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'curl   '  && docker exec -itd checkdb  /bin/bash -c  'tar xvfz data.tar.gz' && docker exec -itd checkdb  /bin/bash -c  ' rm data.tar.gz && mv mainnet tmp/'")
 	session.RunCmd("docker exec -itd checkdb  /bin/bash -c  'mkdir -p /go/src/github.com/QuarkChain/goquarkchain/cmd/cluster/qkc-data   '")
