@@ -1,6 +1,7 @@
 #!/bin/bash
 
 configPath=$1
+
 slaveInfo=`grep -Po 'ID[" :]+\K[^"]+' $configPath | grep S`
 
 # start slave
@@ -11,14 +12,9 @@ do
 	 eval $cmd
 done
 
-sleep 2s
+sleep 5s
 
 # start master
-cmd="./cluster --cluster_config "${configPath}" "
-
-if [  -n "$2" ] ;then
-    cmd="./cluster --cluster_config "${configPath}" "$2"  "
-fi
-
+cmd="./cluster --cluster_config "${configPath}" >>master.log 2>&1 &"
 echo $cmd
 eval $cmd
